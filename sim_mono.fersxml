@@ -31,6 +31,24 @@
         <random_phase_offset>0.1</random_phase_offset>
     </timing>
 
+  <timing name="clock2">
+    <frequency>44100</frequency>
+    <random_freq_offset> 0.1</random_freq_offset>
+    <random_phase_offset>0.1</random_phase_offset>
+    </timing>
+
+  <timing name="clock3">
+    <frequency>44100</frequency>
+    <random_freq_offset> 0.1</random_freq_offset>
+    <random_phase_offset>0.1</random_phase_offset>
+    </timing>
+
+  <timing name="clock4">
+    <frequency>44100</frequency>
+    <random_freq_offset> 0.1</random_freq_offset>
+    <random_phase_offset>0.1</random_phase_offset>
+    </timing>
+
   <antenna name="isotropic" pattern="isotropic">
   </antenna>
  
@@ -52,15 +70,15 @@
       <elevationrate>0</elevationrate>
     </fixedrotation>
 
-    <monostatic name="monostatic" type="pulsed" antenna="isotropic" pulse="chirp" timing="clock">
+    <transmitter name="Tx_chirp" type="pulsed" antenna="isotropic" pulse="chirp" timing="clock">
       <window_skip>0</window_skip>
-      <window_length>1e-3</window_length>
+      <window_length>10</window_length>
       <prf>1e-1</prf>
       <noise_temp>1e-5</noise_temp>
-    </monostatic>
+    </transmitter>
   </platform>
 
-  <platform name="target">
+  <platform name="Transmitter">
 
     <motionpath interpolation="linear">
       <positionwaypoint>
@@ -78,12 +96,12 @@
       <elevationrate>0</elevationrate>
     </fixedrotation>
 
-    <monostatic name="Tx_noise1" type="pulsed" antenna="isotropic" pulse="chirp" timing="clock">
+    <transmitter name="Tx_noise1" type="pulsed" antenna="isotropic" pulse="chirp" timing="clock">
       <window_skip>0</window_skip>
       <window_length>10/window_length>
       <prf>1e-1</prf>
       <noise_temp>1e-5</noise_temp>
-    </monostatic>
+    </transmitter>
   </platform>
 
   <platform name="Mic1_Rx">
@@ -103,12 +121,14 @@
       <elevationrate>0</elevationrate>
     </fixedrotation>
 
-    <monostatic name="Mic1" type="pulsed" antenna="isotropic" pulse="chirp" timing="clock">
+    <receiver name="Mic1" type="pulsed" antenna="isotropic" pulse="chirp" timing="clock">
       <window_skip>0</window_skip>
       <window_length>10</window_length>
       <prf>1e-1</prf>
-      <noise_temp>1e-5</noise_temp>
-    </monostatic>
+      <rcs type="isotropic">
+        <value>200</value><!-- Target RCS in square meters -->
+      </rcs>
+    </receiver>
   </platform>
 
   <platform name="Mic2_Rx">
@@ -128,12 +148,14 @@
       <elevationrate>0</elevationrate>
     </fixedrotation>
 
-    <monostatic name="Mic2" type="pulsed" antenna="isotropic" pulse="chirp" timing="clock">
+    <receiver name="Mic2" type="pulsed" antenna="isotropic" pulse="chirp" timing="clock">
       <window_skip>0</window_skip>
       <window_length>10</window_length>
       <prf>1e-1</prf>
-      <noise_temp>1e-5</noise_temp>
-    </monostatic>
+      <rcs type="isotropic">
+        <value>200</value><!-- Target RCS in square meters -->
+      </rcs>
+    </receiver>
   </platform>
 
   <platform name="Mic3_Rx">
@@ -153,12 +175,14 @@
       <elevationrate>0</elevationrate>
     </fixedrotation>
 
-    <monostatic name="Mic3" type="pulsed" antenna="isotropic" pulse="chirp" timing="clock">
+    <receiver name="Mic3" type="pulsed" antenna="isotropic" pulse="chirp" timing="clock">
       <window_skip>0</window_skip>
       <window_length>10</window_length>
       <prf>1e-1</prf>
-      <noise_temp>1e-5</noise_temp>
-    </monostatic>
+      <rcs type="isotropic">
+        <value>200</value><!-- Target RCS in square meters -->
+      </rcs>
+    </receiver>
   </platform>
 
   <platform name="Mic4_Rx">
@@ -178,12 +202,15 @@
       <elevationrate>0</elevationrate>
     </fixedrotation>
 
-    <monostatic name="Mic4" type="pulsed" antenna="isotropic" pulse="chirp" timing="clock">
+    <receiver name="Mic4" type="pulsed" antenna="isotropic" pulse="chirp" timing="clock">
       <window_skip>0</window_skip>
       <window_length>10</window_length>
       <prf>1e-1</prf>
-      <noise_temp>1e-5</noise_temp>
-    </monostatic>
+      <rcs type="isotropic">
+        <value>200</value><!-- Target RCS in square meters -->
+      </rcs>
+
+    </receiver>
   </platform>
 
 </simulation>
