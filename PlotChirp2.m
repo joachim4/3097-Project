@@ -1,6 +1,6 @@
 % Calculate the cross-correlation between the chirp and microphone data
 chirp_data = hdf5read('chirp.h5', '/I/value') + 1i * hdf5read('chirp.h5', '/Q/value');
-mic_data = hdf5read('Mic4.h5','chunk_000001_I') + 1i * hdf5read('Mic4.h5','chunk_000001_Q');
+mic_data = hdf5read('Mic3.h5','chunk_000000_I') + 1i * hdf5read('Mic3.h5','chunk_000000_Q');
 
 % Extract the real and imaginary parts
 chirp_I = real(chirp_data);

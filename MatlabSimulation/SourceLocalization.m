@@ -60,11 +60,7 @@ waveform = phased.LinearFMWaveform('SampleRate',fs,'SweepBandwidth',bw,...
 %waveform = phased.LinearFMWaveform(chirpData);
 %%waveform = phased.CustomFMWaveform()
 %%waveform =  phased.RectangularWaveform("SampleRate",fs);a
-signal = waveform();
-plot(abs(waveform()));
-title('Received Signal at Receiver 1');
-xlabel('Sample Index');
-ylabel('Amplitude');
+
 nfft = 128;
 
 radiator = phased.WidebandRadiator('Sensor',srcULA,...
@@ -127,37 +123,10 @@ received_signal3 = sigr3;
 received_signal4 = sigr4;
 
 % Find the index of the maximum correlation value (lag)
-[~, lagIndex] = max(crossCorrelation);
-lag = lagIndex - (length(signal1) - 1); % Compute lag in samples
+%[~, lagIndex] = max(crossCorrelation);
+%lag = lagIndex - (length(signal1) - 1); % Compute lag in samples
 
 fprintf('The maximum cross-correlation occurs at lag: %d samples\n', lag);
-
-subplot(4, 1, 1);
-plot(abs(received_signal1));
-title('Received Signal at Receiver 1');
-xlabel('Sample Index');
-ylabel('Amplitude');
-
-subplot(4, 1, 2);
-plot(abs(received_signal2));
-title('Received Signal at Receiver 2');
-xlabel('Sample Index');
-ylabel('Amplitude');
-
-subplot(4, 1, 3);
-plot(abs(received_signal3));
-title('Received Signal at Receiver 3');
-xlabel('Sample Index');
-ylabel('Amplitude');
-
-subplot(4, 1, 4);
-plot(abs(received_signal4));
-title('Received Signal at Receiver 4');
-xlabel('Sample Index');
-ylabel('Amplitude');
-
-% Optional: Adjust the plot layout for better visualization
-sgtitle('Received Signals at Receivers');
 
 
 % Create GCCEstimators for all 4 receivers
