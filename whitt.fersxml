@@ -7,7 +7,7 @@
     <starttime>0</starttime>
     <endtime>20</endtime>
     <c>343</c>
-    <rate>48000</rate>
+    <rate>4800</rate>
     <export binary="true" csvbinary="false" xml="false"/>
   </parameters>
 
