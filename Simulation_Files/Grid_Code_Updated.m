@@ -183,40 +183,40 @@ end
 
 function [Estimation1, Estimation2, Estimation3, Estimation4] = find_position(LTable,t21, t31, t41, t32, t42, t43)
 
-    td_simN1 = LTable(:, 4:6);
-    td_simN2 = [LTable(:, 2), LTable(:, 3), LTable(:, 6)];
-    td_simN3 = [LTable(:, 1), LTable(:, 3), LTable(:, 5)];
-    td_simN4 = [LTable(:, 1), LTable(:, 2), LTable(:, 4)];
+    td1 = LTable(:, 4:6);
+    td2 = [LTable(:, 2), LTable(:, 3), LTable(:, 6)];
+    td3 = [LTable(:, 1), LTable(:, 3), LTable(:, 5)];
+    td4 = [LTable(:, 1), LTable(:, 2), LTable(:, 4)];
 
     % Created variables for the individual time differences
-    td_arrN1_1 = t32;
-    td_arrN1_2 = t42;
-    td_arrN1_3 = t43;
+    td_N1_1 = t32;
+    td_N1_2 = t42;
+    td_N1_3 = t43;
 
-    td_arrN2_1 = t31;
-    td_arrN2_2 = t41;
-    td_arrN2_3 = t43;
+    td_N2_1 = t31;
+    td_N2_2 = t41;
+    td_N2_3 = t43;
 
-    td_arrN3_1 = t21;
-    td_arrN3_2 = t41;
-    td_arrN3_3 = t42;
+    td_N3_1 = t21;
+    td_N3_2 = t41;
+    td_N3_3 = t42;
 
-    td_arrN4_1 = t21;
-    td_arrN4_2 = t31;
-    td_arrN4_3 = t32;
+    td_N4_1 = t21;
+    td_N4_2 = t31;
+    td_N4_3 = t32;
 
 
 % Calculated the time differences using bsxfun function
-diff_arrN1 = bsxfun(@minus, [td_simN1(:, 1), td_simN1(:, 2), td_simN1(:, 3)], [td_arrN1_1, td_arrN1_2, td_arrN1_3]);
-diff_arrN2 = bsxfun(@minus, [td_simN2(:, 1), td_simN2(:, 2), td_simN2(:, 3)], [td_arrN2_1, td_arrN2_2, td_arrN2_3]);
-diff_arrN3 = bsxfun(@minus, [td_simN3(:, 1), td_simN3(:, 2), td_simN3(:, 3)], [td_arrN3_1, td_arrN3_2, td_arrN3_3]);
-diff_arrN4 = bsxfun(@minus, [td_simN4(:, 1), td_simN4(:, 2), td_simN4(:, 3)], [td_arrN4_1, td_arrN4_2, td_arrN4_3]);
+diff1 = bsxfun(@minus, [td1(:, 1), td1(:, 2), td1(:, 3)], [td_N1_1, td_N1_2, td_N1_3]);
+diff2 = bsxfun(@minus, [td2(:, 1), td2(:, 2), td2(:, 3)], [td_N2_1, td_N2_2, td_N2_3]);
+diff3 = bsxfun(@minus, [td3(:, 1), td3(:, 2), td3(:, 3)], [td_N3_1, td_N3_2, td_N3_3]);
+diff4 = bsxfun(@minus, [td4(:, 1), td4(:, 2), td4(:, 3)], [td_N4_1, td_N4_2, td_N4_3]);
 
 
-    [~, IN1] = min(sum(abs(diff_arrN1) .* 2, 2));
-    [~, IN2] = min(sum(abs(diff_arrN2) .* 2, 2));
-    [~, IN3] = min(sum(abs(diff_arrN3) .* 2, 2));
-    [~, IN4] = min(sum(abs(diff_arrN4) .* 2, 2));
+    [~, IN1] = min(sum(abs(diff1) .* 2, 2));
+    [~, IN2] = min(sum(abs(diff2) .* 2, 2));
+    [~, IN3] = min(sum(abs(diff3) .* 2, 2));
+    [~, IN4] = min(sum(abs(diff4) .* 2, 2));
 
   
 Estimation1 = LTable(IN1, [7, 8]);
@@ -225,6 +225,7 @@ Estimation3 = LTable(IN3, [7, 8]);
 Estimation4 = LTable(IN4, [7, 8]);
 
 end
+
 %Function to add Gaussian white noise to the microphone-received signals(according to a user-defined level of noise)
 function [noisySig, noiseLvl] = AddNoise(delayedSig, level)
 noiseLvl = level*randn(size(delayedSig));
