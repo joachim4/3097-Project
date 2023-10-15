@@ -6,16 +6,88 @@ prop_speed = 343; % Speed of sound value in m/s
 
 % Array storing the positions of our microphones on the grid
 mic_positions = [0, 0;      % Position of mic1
-                 0, 0.5;    % Position of mic2
-                 0.8, 0;    % Position of mic3
-                 0.8, 0.5]; % Position of mic4
+                 0, 6.32;    % Position of mic2
+                 3.68, 0;    % Position of mic3
+                 3.68, 6.32]; % Position of mic4
 
 Lookup = Create_LTable(100,mic_positions(1,:),mic_positions(2,:),mic_positions(3,:),mic_positions(4,:));     % Generate Look up table for TODA WRT mic 1
 
-source_position = [0.8*rand(), 0.5*rand()];
+% Load the chirp signal
+[chirpData, chirpSampleRate] = audioread('chirp.wav');
+signal = chirpData;
+
+% Specify the file names and store them in a cell array
+fileNames = {'wave1.wav', 'wave2.wav', 'wave3.wav', 'wave4.wav'};
+
+% Create a cell array to store the audio data
+audioDataArray = cell(1, length(fileNames));
+
+% Create a figure to hold the plots
+figure;
+
+% Plot the initial chirp signal
+subplot(length(fileNames) + 1, 1, 1);  % Add one more subplot for the chirp
+plot((0:length(signal)-1) / chirpSampleRate, signal);
+title('Original Chirp Signal');
+
+% Initialize a variable to store the concatenated audio data
+maxLength = 0;  % Initialize the maximum length to 0
+
+% Loop through the files, load each one, and store in the cell array
+for i = 1:length(fileNames)
+    % Load the current .wav file
+    [audioData, sampleRate] = audioread(fileNames{i});
+    
+    % Store the audio data in the cell array
+    audioDataArray{i} = audioData;
+    
+    % Update the maximum length
+    maxLength = max(maxLength, length(audioData));
+    
+    % Create a time vector
+    numSamples = length(audioData);
+    time = (0:numSamples-1) / sampleRate;
+    
+    % Plot the waveform with a different color for each file
+    subplot(length(fileNames) + 1, 1, i + 1); % Add one more subplot for the chirp
+    plot(time, audioData);
+    
+    % Customize the subplot titles
+    title(['Sound Waveform - File ' num2str(i)]);
+    
+    % Add labels to the last subplot
+    if i == length(fileNames)
+        xlabel('Time (seconds)');
+        ylabel('Amplitude');
+    end
+end
+
+% Initialize the concatenated audio data matrix with zeros
+concatenatedAudioData = zeros(length(fileNames), maxLength);
+
+% Fill in the matrix with the audio data
+for i = 1:length(fileNames)
+    % Get the audio data for the current file
+    audioData = audioDataArray{i};
+    
+    % Calculate the number of zeros to add for padding
+    paddingSize = maxLength - length(audioData);
+    
+    % Pad the audio data with zeros
+    paddedAudioData = [audioData; zeros(paddingSize, 1)];
+    
+    % Store the padded audio data in the concatenated matrix
+    concatenatedAudioData(i, :) = paddedAudioData';
+end
+
+% Now, concatenatedAudioData is a 4xN matrix containing all the audio data.
 
 
-% Generation of the chirp source signal
+% source_position = [0.8*rand(), 0.5*rand()];
+
+
+%{ 
+Generation of the chirp source signal
    hchirp = dsp.Chirp( ...
     'InitialFrequency', 0,...
     'TargetFrequency', 10, ...
@@ -25,27 +97,120 @@ source_position = [0.8*rand(), 0.5*rand()];
     'SamplesPerFrame', 500);
 
    chirpData = (step(hchirp))';
-
+%}
+%{
+[chirpData, ~] = audioread('chirp.wav');
 signal = chirpData;
 
 t = (0:1/sampling_rate:(length(signal) - 1) / sampling_rate);
 
+% Specify the file names and store them in a cell array
+fileNames = {'kud3.wav', 'kud4.wav', 'kud5.wav', 'kud6.wav'};
+
+% Create a cell array to store the audio data
+audioDataArray = cell(1, length(fileNames));
+
+% Create a figure to hold the plots
+figure;
+
+% Initialize a variable to store the concatenated audio data
+maxLength = 0;  % Initialize the maximum length to 0
+
+% Loop through the files, load each one, and store in the cell array
+for i = 1:length(fileNames)
+    % Load the current .wav file
+    [audioData, sampleRate] = audioread(fileNames{i});
+    
+    % Store the audio data in the cell array
+    audioDataArray{i} = audioData;
+    
+    % Update the maximum length
+    maxLength = max(maxLength, length(audioData));
+    
+    % Create a time vector
+    numSamples = length(audioData);
+    time = (0:numSamples-1) / sampleRate;
+    
+    % Plot the waveform with a different color for each file
+    subplot(length(fileNames), 1, i); % Create subplots in a column
+    plot(time, audioData);
+    
+    % Customize the subplot titles
+    title(['Sound Waveform - File ' num2str(i)]);
+    
+    % Add labels to the last subplot
+    if i == length(fileNames)
+        xlabel('Time (seconds)');
+        ylabel('Amplitude');
+    end
+end
+
+% Initialize the concatenated audio data matrix with zeros
+concatenatedAudioData = zeros(length(fileNames), maxLength);
+
+% Fill in the matrix with the audio data
+for i = 1:length(fileNames)
+    % Get the audio data for the current file
+    audioData = audioDataArray{i};
+    
+    % Calculate the number of zeros to add for padding
+    paddingSize = maxLength - length(audioData);
+    
+    % Pad the audio data with zeros
+    paddedAudioData = [audioData; zeros(paddingSize, 1)];
+    
+    % Store the padded audio data in the concatenated matrix
+    concatenatedAudioData(i, :) = paddedAudioData';
+end
+
+% Now, concatenatedAudioData is a 4xN matrix containing all the audio data.
+
+%}
+
+%{
+% Load the .wav file
+[audioData1, ~] = audioread('kud3.wav');
+[audioData2, ~] = audioread('kud4.wav');
+[audioData3, ~] = audioread('kud5.wav');
+[audioData4, ~] = audioread('kud6.wav');
+
+% Create a time vector
+numSamples1 = length(audioData1);
+time1 = (0:numSamples1-1) / sampling_rate;
+
+numSamples2 = length(audioData2);
+time2 = (0:numSamples2-1) / sampling_rate;
+
+numSamples3 = length(audioData3);
+time3 = (0:numSamples3-1) / sampling_rate;
+
+numSamples4 = length(audioData4);
+time4 = (0:numSamples4-1) / sampling_rate;
+
+% Plot the waveform
+
+plot(time1, audioData1);
+plot(time2,audioData2);
+plot(time3,audioData3);
+plot(time4,audioData4);
+
+%}
 % Euclidean distance formula used to calculate the physical distance between 2 points (source to each mic) in meters - stored in array 
-distance_to_mic = sqrt(sum((mic_positions - source_position).^2, 2));
+%distance_to_mic = sqrt(sum((mic_positions - source_position).^2, 2));
 
 
 % Calculate delays for each microphone
-perfect_timeDelays = distance_to_mic/prop_speed;
-delays = round((perfect_timeDelays) * sampling_rate);
+%perfect_timeDelays = distance_to_mic/prop_speed;
+%delays = round((perfect_timeDelays) * sampling_rate);
 
-sigDelay = zeros(4, length(signal) + max(delays));
+%sigDelay = zeros(4, length(signal) + max(delays));
 
 % Add noise (Gaussian) to the delayed signals
-[sigNoise, noiseLvl] = AddNoise(sigDelay, 0.4);
+%[sigNoise, noiseLvl] = AddNoise(sigDelay, 0.4);
 
 % Filter the noisy signals
-filtSignals = SignalFilter(sigNoise);
-
+%filtSignals = SignalFilter(sigNoise);
+%{
 figure;
 subplot(5,1,1);
 plot(t, signal);
@@ -56,12 +221,26 @@ for i = 1:4
     plot(t, filtSignals(i, 1:length(signal)));
     title(['Received signal at Microphone ', num2str(i)]);
 end
+%}
+%{
+figure;
+subplot(5,1,1);
+plot(time, signal);
+title('Original Sound source - Chirp Signal');
+for i = 1:4
+    concatenatedAudioData(i, delays(i) + 1 : delays(i) + length(signal)) = signal;
+    subplot(5, 1, i+1);
+    plot(time, concatenatedAudioData(i, 1:length(signal)));
+    title(['Received signal at Microphone ', num2str(i)]);
+end
+%}
+
 
 figure;
 ToA_source2mic = zeros(1,4);
 for i = 1:4
      % Cross correlation done on filtered microphone detected signals & original chirp signal
-    [cross_corr, delay_array] = xcorr(filtSignals(i, :),signal);
+    [cross_corr, delay_array] = xcorr(concatenatedAudioData(i, :),signal);
 
     % Code to find the maximum peak in the cross-correlation (avoiding negative peaks)
     [max_peak, max_peak_idx] = max(cross_corr);
@@ -123,7 +302,7 @@ else
 
 end
 
-fprintf("Actual Source position:  X = %.3f  Y = %.3f\n",source_position(1),source_position(2));
+%fprintf("Actual Source position:  X = %.3f  Y = %.3f\n",source_position(1),source_position(2));
 fprintf("Lookup table estimated position:  X = %.3f  Y = %.3f\n",Triangulation_estimate(1),Triangulation_estimate(2));
 
 function [LTable] = Create_LTable(table_resolution,mic1, mic2, mic3, mic4)
