@@ -1,10 +1,11 @@
 % 
+%{
 % Define the path to the Python script file
 python_script_file = 'PiRecord.py';
 
 % Use the system function to run your Python script
 system(['python ', python_script_file]);
-
+%}
 
 sound_source = [0.5 0.1];
 sampling_rate = 48000; % Set a sampling rate in Hertz
@@ -23,6 +24,62 @@ Lookup = Create_LTable(100,mic_positions(1,:),mic_positions(2,:),mic_positions(3
 [input1, input2] = splitStereoToMono('2pistereo.wav');
 [reference_sig,Fs_chirp] = audioread("chirp.wav");
 
+
+% Ensure all audio signals have the same length
+minLength = min([length(input1), length(input2), length(input3), length(input4)]);
+
+input1 = input1(1:minLength);
+input2 = input2(1:minLength);
+input3 = input3(1:minLength);
+input4 = input4(1:minLength);
+
+% Create a time vector
+t = (0:minLength - 1) / Fs;
+
+% Create a new figure and plot the signals
+figure;
+
+subplot(3, 2, 1);
+plot(t, input1);
+title('Input 1');
+xlabel('Time (s)');
+ylabel('Amplitude');
+
+subplot(3, 2, 2);
+plot(t, input2);
+title('Input 2');
+xlabel('Time (s)');
+ylabel('Amplitude');
+
+subplot(3, 2, 3);
+plot(t, input3);
+title('Input 3');
+xlabel('Time (s)');
+ylabel('Amplitude');
+
+subplot(3, 2, 4);
+plot(t, input4);
+title('Input 4');
+xlabel('Time (s)');
+ylabel('Amplitude');
+
+t_chirp = (0:length(reference_sig) - 1) / Fs_chirp;
+subplot(3, 2, [5, 6]);
+plot(t_chirp, reference_sig);
+title('Reference Signal (chirp)');
+xlabel('Time (s)');
+ylabel('Amplitude');
+
+sgtitle('Audio Signals');
+
+% Adjust figure layout
+set(gcf, 'Position', [100, 100, 1200, 800]);
+
+% Optional: Save the figure as an image file
+% saveas(gcf, 'audio_signals_plot.png');
+
+
+
 sig1 = SignalFilter(input1);
 sig2 = SignalFilter(input2);
 sig3 = SignalFilter(input3);
@@ -37,7 +94,7 @@ sync4 = sqrt((mic_positions(4,1)-SyncSignal(1))^2+(mic_positions(4,2)-SyncSignal
 toa_cal = zeros(1, 4);
 toa_snd = zeros(1, 4);
 signals = {sig1, sig2, sig3, sig4};
-
+%{
 for i = 1:4
     y = signals{i};
 
@@ -61,6 +118,53 @@ for i = 1:4
     toa_cal(i) = min(peaks) / sampling_rate;
     toa_snd(i) = max(peaks) / sampling_rate;
 end
+%}
+
+% Define your signals and reference signal (you may have already defined them)
+% Make sure you have the following variables defined: signals, reference_sig, sampling_rate
+
+% Define the number of signals
+num_signals = 4;
+
+% Create a figure to hold the subplots
+figure;
+
+for i = 1:num_signals
+    y = signals{i};
+
+    % First correlation
+    [Correlation_arr, lag_arr] = xcorr(y, reference_sig);
+    [~, index_of_lag] = max(abs(Correlation_arr));
+    peak1 = lag_arr(index_of_lag);
+
+    % Create a subplot for the first correlation graph
+    subplot(num_signals, 2, 2 * i - 1);
+    plot(lag_arr, Correlation_arr);
+    title(['Signal ', num2str(i), ' - First Correlation']);
+    xlabel('Lag');
+    ylabel('Correlation');
+
+    % Flatten y
+    flattern = zeros(1, 3 * sampling_rate);
+    flat = length(flattern);
+    y(peak1:peak1 + flat - 1) = flattern;
+
+    % Second correlation
+    [Correlation_arr, lag_arr] = xcorr(y, reference_sig);
+    [~, index_of_lag] = max(abs(Correlation_arr));
+    peak2 = lag_arr(index_of_lag);
+
+    % Create a subplot for the second correlation graph
+    subplot(num_signals, 2, 2 * i);
+    plot(lag_arr, Correlation_arr);
+    title(['Signal ', num2str(i), ' - Second Correlation']);
+    xlabel('Lag');
+    ylabel('Correlation');
+end
+
+% Adjust the layout and display the subplots
+suptitle('Correlation Graphs');
+
 
 SyncToa1 = toa_snd(1)-toa_cal(1)+sync1;
 SyncToa2 = toa_snd(2)-toa_cal(2)+sync2;
